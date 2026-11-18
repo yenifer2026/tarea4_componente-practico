@@ -251,3 +251,116 @@ class ReservaSala(Servicio):
 # 5. Implementar `describir_servicio(self) -> str`, `validar_integridad(self) -> bool`
 #    y `obtener_resumen(self) -> str`.
 # ==============================================================================
+
+# Integrante 3: Cristian Camilo Barragan Perdomo
+# Implementacion de la clase AsesoriaEspecializada
+
+
+class AsesoriaEspecializada(Servicio):
+    """Representa una asesoria presencial o virtual."""
+
+    def __init__(
+        self,
+        nombre_servicio: str,
+        tarifa_base_hora: float,
+        area_tematica: str,
+        modalidad: str,
+        disponible: bool = True,
+        id_entidad: str | None = None,
+    ) -> None:
+        super().__init__(
+            nombre_servicio=nombre_servicio,
+            tarifa_base_hora=tarifa_base_hora,
+            disponible=disponible,
+            id_entidad=id_entidad,
+        )
+        self.__area_tematica = ""
+        self.__modalidad = ""
+        self.area_tematica = area_tematica
+        self.modalidad = modalidad
+
+        logger.info(
+            "Asesoria creada: %s | Area: %s | Modalidad: %s",
+            self.nombre_servicio,
+            self.area_tematica,
+            self.modalidad,
+        )
+
+    @property
+    def area_tematica(self) -> str:
+        """Obtiene el area de la asesoria."""
+        return self.__area_tematica
+
+    @area_tematica.setter
+    def area_tematica(self, valor: str) -> None:
+        """Valida el area tematica."""
+        if not isinstance(valor, str) or len(valor.strip()) < 3:
+            raise DatoInvalidoError(
+                "El area tematica debe tener al menos 3 caracteres.",
+                codigo_error="FJ-114",
+            )
+        self.__area_tematica = valor.strip()
+
+    @property
+    def modalidad(self) -> str:
+        """Obtiene la modalidad de la asesoria."""
+        return self.__modalidad
+
+    @modalidad.setter
+    def modalidad(self, valor: str) -> None:
+        """Permite solamente modalidad presencial o virtual."""
+        if not isinstance(valor, str) or valor.strip().upper() not in (
+            "PRESENCIAL", "VIRTUAL"
+        ):
+            raise DatoInvalidoError(
+                "La modalidad debe ser PRESENCIAL o VIRTUAL.",
+                codigo_error="FJ-115",
+            )
+        self.__modalidad = valor.strip().upper()
+
+    def calcular_tarifa_especifica(self, horas: float) -> float:
+        """Aplica un recargo del 15% en modalidad presencial."""
+        self.verificar_disponibilidad()
+
+        if (
+            not isinstance(horas, (int, float))
+            or isinstance(horas, bool)
+            or horas <= 0
+        ):
+            raise DatoInvalidoError(
+                "Las horas deben ser un numero positivo.",
+                codigo_error="FJ-116",
+            )
+
+        subtotal = self.tarifa_base_hora * horas
+
+        if self.modalidad == "PRESENCIAL":
+            subtotal *= 1.15
+
+        return round(subtotal, 2)
+
+    def describir_servicio(self) -> str:
+        """Describe las caracteristicas de la asesoria."""
+        estado = "Disponible" if self.disponible else "No disponible"
+        return (
+            f"Asesoria '{self.nombre_servicio}' | "
+            f"Area: {self.area_tematica} | "
+            f"Modalidad: {self.modalidad} | "
+            f"Tarifa: ${self.tarifa_base_hora:,.2f}/h | "
+            f"Estado: {estado}"
+        )
+
+    def validar_integridad(self) -> bool:
+        """Comprueba que los datos sean validos."""
+        return (
+            self.tarifa_base_hora > 0
+            and len(self.area_tematica) >= 3
+            and self.modalidad in ("PRESENCIAL", "VIRTUAL")
+        )
+
+    def obtener_resumen(self) -> str:
+        """Genera un resumen del servicio."""
+        return (
+            f"Servicio [{self.id_entidad}] | "
+            f"{self.describir_servicio()}"
+        )
