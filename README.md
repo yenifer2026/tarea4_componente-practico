@@ -57,7 +57,7 @@ La arquitectura base queda completamente funcional desde el primer commit oficia
 | Rol | Archivo Destino | Módulo / Responsabilidad Asignada | Etiqueta en Código |
 | :--- | :--- | :--- | :--- |
 | **Líder (Jennifer Perdomo)** | Arquitectura Core (`src/*`, `main.py`, `README.md`) | Base POO, excepciones, logger, `Cliente`, `Servicio`, `ReservaSala`, `Reserva` y operaciones 1–5. | *Implementado* |
-| **Integrante 2** | `src/servicios.py` | Implementar clase derivada `AlquilerEquipo(Servicio)` con seguro técnico del 5% y atributos encapsulados. | `# TODO - INTEGRANTE 2` |
+| **Integrante 2 (Mathias Claros)** | `src/servicios.py` | Implementar clase derivada `AlquilerEquipo(Servicio)` con seguro técnico del 5% y atributos encapsulados. | `# TODO - INTEGRANTE 2` |
 | **Integrante 3** | `src/servicios.py` | Implementar clase derivada `AsesoriaEspecializada(Servicio)` con recargo según modalidad. | `# TODO - INTEGRANTE 3` |
 | **Integrante 4** | `src/reserva.py` | Implementar `cancelar_reserva(self, motivo: str)` y validaciones avanzadas de transición de estados. | `# TODO - INTEGRANTE 4` |
 | **Integrante 5** | `main.py` | Agregar operaciones simuladas 6 a 10+ integrando los nuevos servicios, cancelaciones y reporte final. | `# TODO - INTEGRANTE 5` |
