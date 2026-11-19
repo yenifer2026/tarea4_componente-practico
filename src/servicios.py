@@ -227,16 +227,66 @@ class ReservaSala(Servicio):
         return f"Servicio [{self.id_entidad}] | {self.describir_servicio()}"
 
 
-# ==============================================================================
-# TODO - INTEGRANTE 2: Implementar clase derivada AlquilerEquipo(Servicio)
-# Instrucciones para el Integrante 2:
-# 1. Heredar de `Servicio`.
-# 2. Agregar atributos privados encapsulados: `__tipo_equipo` (str) y `__requiere_deposito` (bool).
-# 3. Implementar propiedades y setters con validaciones (usando DatoInvalidoError).
-# 4. Implementar `calcular_tarifa_especifica(self, horas: float) -> float`:
-#    - Calcular tarifa base por horas y sumar un seguro técnico del 5% si aplica.
-# 5. Implementar `describir_servicio(self) -> str`, `validar_integridad(self) -> bool`
-#    y `obtener_resumen(self) -> str`.
+# ==============================================================
+# INTEGRANTE 2 — Mathias Claros-Clase AlquilerEquipo
+# ==============================================================
+
+class AlquilerEquipo(Servicio):
+    """Clase derivada que representa el servicio de alquiler de equipos"""
+
+    def __init__(self, nombre_servicio, tarifa_base, tipo_equipo: str, requiere_deposito: bool):
+        super().__init__(nombre_servicio, tarifa_base)
+        self.__tipo_equipo = tipo_equipo
+        self.__requiere_deposito = requiere_deposito
+
+    @property
+    def tipo_equipo(self):
+        return self.__tipo_equipo
+
+    @tipo_equipo.setter
+    def tipo_equipo(self, valor: str):
+        if not isinstance(valor, str) or len(valor.strip()) == 0:
+            raise DatoInvalidoError("El tipo de equipo debe ser un texto válido")
+        self.__tipo_equipo = valor.strip()
+
+    @property
+    def requiere_deposito(self):
+        return self.__requiere_deposito
+
+    @requiere_deposito.setter
+    def requiere_deposito(self, valor: bool):
+        if not isinstance(valor, bool):
+            raise DatoInvalidoError("El valor de requiere_deposito debe ser Verdadero o Falso")
+        self.__requiere_deposito = valor
+
+    def calcular_tarifa_especifica(self, horas: float) -> float:
+        if horas <= 0:
+            raise DatoInvalidoError("Las horas deben ser un valor mayor a cero")
+        
+        tarifa = self._tarifa_base * horas
+        if self.__requiere_deposito:
+            tarifa += tarifa * 0.05
+        
+        return round(tarifa, 2)
+
+    def describir_servicio(self) -> str:
+        dep = "Sí" if self.__requiere_deposito else "No"
+        return f"Alquiler de Equipo: {self.__tipo_equipo} | Tarifa base: ${self._tarifa_base:.2f} | Requiere depósito: {dep}"
+
+    def validar_integridad(self) -> bool:
+        try:
+            if not isinstance(self.__tipo_equipo, str) or len(self.__tipo_equipo.strip()) == 0:
+                return False
+            if not isinstance(self.__requiere_deposito, bool):
+                return False
+            if self._tarifa_base <= 0:
+                return False
+            return True
+        except:
+            return False
+
+    def obtener_resumen(self) -> str:
+        return f"Servicio [{self._id_entidad}] | {self.describir_servicio()}"
 # ==============================================================================
 
 
